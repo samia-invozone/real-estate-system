@@ -7,7 +7,8 @@
     "lint": "eslint --fix main.js",
     "format": "prettier -w .",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "swagger-autogen": "node swagger.js"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +30,9 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.9.0",
     "sequelize-cli": "^6.3.0",
-    "swagger-ui-express": "^4.1.6"
+    "swagger-ui-express": "^4.1.6",
+    "yamljs": "^0.3.0",
+    "swagger-autogen": "^2.12.6"
+
   }
 }

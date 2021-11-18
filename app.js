@@ -1,8 +1,9 @@
 const express = require("express");
 const path = require("path");
 const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
 const routes = require("./routes/user");
-const swaggerDocument = require("./swagger.json");
+const swaggerDocument = require("./swagger_output.json");
 // Database
 const db = require("./config/database");
 // Test DB
