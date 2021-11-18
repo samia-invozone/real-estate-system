@@ -1,14 +1,12 @@
 const express = require("express");
 const path = require("path");
 const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const Joi = require("joi");
 const routes = require("./routes/user");
 const swaggerDocument = require("./swagger.json");
 // Database
 const db = require("./config/database");
-// Test DB
-// db.authenticate()
-//   .then(() => console.log("Database connected...."))
-//   .catch((err) => console.log(`Error: ${err}`));
 
 const app = express();
 app.use(express.json());
