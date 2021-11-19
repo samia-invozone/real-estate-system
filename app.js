@@ -1,7 +1,6 @@
 const express = require("express");
 const path = require("path");
 const swaggerUi = require("swagger-ui-express");
-const YAML = require("yamljs");
 const Joi = require("joi");
 const routes = require("./routes/user");
 const swaggerDocument = require("./swagger.json");
