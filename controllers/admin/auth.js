@@ -3,6 +3,11 @@ const jwt = require("jsonwebtoken");
 const valid = require("../../validations/validation");
 const dotenv = require("dotenv").config();
 const { User, Role } = require("../../models");
+const {
+  Countries,
+  States,
+  Cities,
+} = require("countries-states-cities-service");
 
 const {
   successResponse,
@@ -35,6 +40,51 @@ const login = async (req, res) => {
     return errorResponse(req, res, err.message, 400);
   }
 };
+
+// get countries
+const getCountries = async (req, res) => {
+  try {
+    const countries = Countries.getCountries({
+      sort: {
+        mode: "asc",
+      },
+    });
+    return successResponse(req, res, countries);
+  } catch (err) {
+    return errorResponse(req, res, err.message);
+  }
+};
+
+// get states
+const getStates = async (req, res) => {
+  try {
+    const states = States.getStates({
+      sort: {
+        mode: "asc",
+      },
+    });
+    return successResponse(req, res, states);
+  } catch (err) {
+    return errorResponse(req, res, err.message);
+  }
+};
+
+// get cities
+const getCities = async (req, res) => {
+  try {
+    const cities = Cities.getCities({
+      sort: {
+        mode: "asc",
+      },
+    });
+    return successResponse(req, res, cities);
+  } catch (err) {
+    return errorResponse(req, res, err.message);
+  }
+};
 module.exports = {
   login,
+  getCountries,
+  getStates,
+  getCities,
 };

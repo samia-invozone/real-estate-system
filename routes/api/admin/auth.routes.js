@@ -17,4 +17,12 @@ router.put("/user/:id", verifyToken, userController.updateUserById);
 
 router.delete("/user/:id", verifyToken, userController.deleteUserById);
 
+// get all countries
+router.get("/countries", authController.getCountries);
+
+// get all states
+router.get("/states", authController.getStates);
+
+// get all cities
+router.get("/cities", authController.getCities);
 module.exports = router;
