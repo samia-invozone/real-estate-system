@@ -8,7 +8,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Feature.belongsToMany(models.Property, {
+        foreignKey: "feature_id",
+        through: "property_features",
+      });
     }
   }
   Feature.init(

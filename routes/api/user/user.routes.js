@@ -1,9 +1,9 @@
 const express = require("express");
-const verifyToken = require("../middleware/auth");
+const verifyToken = require("../../../middleware/auth");
 
 const router = express.Router();
 
-const userController = require("../controllers/user");
+const userController = require("../../../controllers/user/user");
 
 router.post("/login", userController.login);
 

@@ -2,12 +2,15 @@
 /* eslint-disable camelcase */
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const valid = require("../validations/validation");
+const valid = require("../../validations/validation");
 const dotenv = require("dotenv").config();
 
-const { successResponse, errorResponse } = require("../helpers/responseHelper");
+const {
+  successResponse,
+  errorResponse,
+} = require("../../helpers/responseHelper");
 
-const { User, UserRole, Role } = require("../models");
+const { User, UserRole, Role } = require("../../models");
 // get all users
 const getAllUser = async (req, res) => {
   try {
@@ -21,23 +24,19 @@ const getAllUser = async (req, res) => {
 // create user function
 const createUser = async (req, res) => {
   try {
-    if (!req.body.first_name) {
+    if (!Object.keys(req.body).length) {
       return errorResponse(req, res, "req body cannot be empty", 400);
     }
     const { error } = valid.validateUserSchema(req.body);
     if (error) return errorResponse(req, res, error.details[0].message, 400);
-    let {
-      first_name,
-      last_name,
-      email,
-      password,
-      account_status,
-      verified_at,
-    } = req.body;
+    let { first_name, last_name, email, password } = req.body;
     let payload;
     let addRole;
     let salt;
-
+    let verified_at;
+    let account_status;
+    account_status = "pending";
+    verified_at = new Date();
     salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
 
@@ -49,7 +48,6 @@ const createUser = async (req, res) => {
       account_status,
       verified_at,
     };
-    // res.send(email);
     const oldUser = await User.findOne({ where: { email } });
     if (oldUser) {
       errorResponse(req, res, "User with this email already exists.", 409);

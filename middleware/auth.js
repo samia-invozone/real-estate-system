@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 const { errorResponse } = require("../helpers/responseHelper");
 const dotenv = require("dotenv").config();
+const User = require("../models/user");
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   const token =
     req.body.token || req.query.token || req.headers["x-access-token"];
 
@@ -15,7 +16,7 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.TOKEN_KEY);
     req.user = decoded;
   } catch (err) {
-    return errorResponse(req, res, "Invalid token", 401);
+    return errorResponse(req, res, err.message, 401);
   }
   return next();
 };
