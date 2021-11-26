@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         constraints: false,
       });
+      property.belongsToMany(models.Feature, {
+        foreignKey: "property_id",
+        through: "property_features",
+        constraints: false,
+      });
     }
   }
   property.init(
@@ -33,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       tableName: "properties",
-      modelName: "property",
+      modelName: "Property",
     }
   );
   return property;

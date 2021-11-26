@@ -1,3 +1,4 @@
+const { check } = require("prettier");
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {

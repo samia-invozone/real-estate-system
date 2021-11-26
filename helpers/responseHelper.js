@@ -1,7 +1,8 @@
-const successResponse = (req, res, data, code = 200) =>
+const successResponse = (req, res, data, token='', code = 200) =>
   res.send({
     code,
     data,
+    token,
     success: true,
   });
 
