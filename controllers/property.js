@@ -1,23 +1,18 @@
-/* eslint-disable camelcase */
-const { Property, PropertyFeature, User, Feature } = require("../../models");
-const {
-  successResponse,
-  errorResponse,
-} = require("../../helpers/responseHelper");
-const valid = require("../../validations/validation");
+const { Property, PropertyFeature, User, Feature } = require("../models");
+const { successResponse, errorResponse } = require("../helpers/responseHelper");
+const valid = require("../validations/validation");
 
 // get all properties
 const getAllProperties = async (req, res) => {
   try {
-    let properties = [];
-    properties = await Property.findAll({
+    const properties = await Property.findAll({
       include: [
         {
           model: Feature,
         },
       ],
     });
-    return successResponse(req, res, properties);
+    return successResponse(req, res, "List of properties", properties);
   } catch (err) {
     return errorResponse(req, res, err.message, 400);
   }
@@ -34,14 +29,14 @@ const addNewProperty = async (req, res) => {
       type,
       status,
       location,
-      no_of_bedroom,
-      no_of_bathroom,
-      no_of_floor,
       garage,
       area,
       size,
       price,
     } = req.body;
+    const { noOfBedroom } = req.body.no_of_bedroom;
+    const { noOfBathroom } = req.body.no_of_bathroom;
+    const { noOfFloor } = req.body.no_of_floor;
     const authUser = await User.findOne({ where: { email: req.user.email } });
     const payload = {
       title,
@@ -49,9 +44,9 @@ const addNewProperty = async (req, res) => {
       type,
       status,
       location,
-      no_of_bedroom,
-      no_of_bathroom,
-      no_of_floor,
+      no_of_bedroom: noOfBedroom,
+      no_of_bathroom: noOfBathroom,
+      no_of_floor: noOfFloor,
       garage,
       area,
       size,
@@ -68,7 +63,7 @@ const addNewProperty = async (req, res) => {
       const propertyFeature = PropertyFeature.create(addFeature);
     });
 
-    return successResponse(req, res, property);
+    return successResponse(req, res, "Property added successfully", property);
   } catch (err) {
     return errorResponse(req, res, err.message, 400);
   }
@@ -82,14 +77,19 @@ const deletePropertyById = async (req, res) => {
       where: { id },
     });
     if (checkProperty) {
-      const delete_from_features = await PropertyFeature.destroy({
+      const deleteFromFeatures = await PropertyFeature.destroy({
         where: { property_id: id },
       });
-      const delete_property = await Property.destroy({
+      const deleteProperty = await Property.destroy({
         where: { id },
       });
-      if (delete_property) {
-        return successResponse(req, res, delete_property);
+      if (deleteProperty) {
+        return successResponse(
+          req,
+          res,
+          "Property has been deleted",
+          deleteProperty
+        );
       }
     }
     return errorResponse(req, res, "No, property found to delete", 400);

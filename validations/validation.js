@@ -39,4 +39,18 @@ const addPropertySchema = (prop) => {
   });
   return schema.validate(prop);
 };
-module.exports = { validateSignIn, validateUserSchema, addPropertySchema };
+const validateAdminSchema = (usr) => {
+  const schema = Joi.object({
+    first_name: Joi.string().required(),
+    last_name: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
+  });
+  return schema.validate(usr);
+};
+module.exports = {
+  validateSignIn,
+  validateUserSchema,
+  addPropertySchema,
+  validateAdminSchema,
+};
