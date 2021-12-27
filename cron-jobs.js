@@ -19,13 +19,14 @@ cron.schedule("* * * * *", () => {
 
   const messageOptions = {
     from: "samia.saeed@invozone.com",
-    to: "dustin.schowalter34@ethereal.email",
+    to: "nicola.rowe97@ethereal.email",
     subject: "Scheduled Email",
     text: "Hi there. This email was automatically sent through cron jobs. I have saved ethereal info in .env file",
   };
 
-  transporter.sendMail(messageOptions, (error, info) => {
+  transporter.sendMail(messageOptions, (error) => {
     if (error) {
+      console.log("error is:", error);
       throw error;
     } else {
       console.log("Email successfully sent!");
