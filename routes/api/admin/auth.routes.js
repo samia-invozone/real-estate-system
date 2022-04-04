@@ -8,6 +8,8 @@ const userController = require("../../../controllers/admin/user");
 // Admin Login
 router.post("/login", authController.login);
 
+router.post("/register", authController.register);
+
 // User Routes
 router.get("/users", verifyToken, userController.getAllUser);
 
@@ -17,12 +19,4 @@ router.put("/user/:id", verifyToken, userController.updateUserById);
 
 router.delete("/user/:id", verifyToken, userController.deleteUserById);
 
-// get all countries
-router.get("/countries", authController.getCountries);
-
-// get all states
-router.get("/states", authController.getStates);
-
-// get all cities
-router.get("/cities", authController.getCities);
 module.exports = router;

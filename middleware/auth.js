@@ -7,7 +7,7 @@ const verifyToken = async (req, res, next) => {
   const token =
     req.body.token || req.query.token || req.headers["x-access-token"];
 
-  console.log(req.headers["x-access-token"]);
+  // console.log(req.headers["x-access-token"]);
 
   if (!token) {
     return errorResponse(req, res, "Token is required for authentication", 403);

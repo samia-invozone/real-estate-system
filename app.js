@@ -14,6 +14,8 @@ const swaggerDocument = require("./swagger.json");
 
 // const job = require("./cron-jobs");
 
+// const bullJob = require("./bull-jobs");
+
 const db = require("./config/database");
 
 const app = express();

@@ -1,9 +1,7 @@
-/* eslint-disable prefer-const */
-/* eslint-disable camelcase */
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const valid = require("../../validations/validation");
 const dotenv = require("dotenv").config();
+const valid = require("../../validations/validation");
 
 const {
   successResponse,
@@ -11,49 +9,34 @@ const {
 } = require("../../helpers/responseHelper");
 
 const { User, UserRole, Role } = require("../../models");
-// get all users
-const getAllUser = async (req, res) => {
+// register user function
+const register = async (req, res) => {
   try {
-    let users = [];
-    users = await User.findAll({ include: Role });
-    return successResponse(req, res, users);
-  } catch (err) {
-    return errorResponse(req, res, err.message, 400);
-  }
-};
-// create user function
-const createUser = async (req, res) => {
-  try {
-    if (!Object.keys(req.body).length) {
-      return errorResponse(req, res, "req body cannot be empty", 400);
-    }
     const { error } = valid.validateUserSchema(req.body);
     if (error) return errorResponse(req, res, error.details[0].message, 400);
-    let { first_name, last_name, email, password } = req.body;
-    let payload;
-    let addRole;
-    let salt;
-    let verified_at;
-    let account_status;
-    account_status = "pending";
-    verified_at = new Date();
-    salt = await bcrypt.genSalt(10);
+    const firstName = req.body.first_name;
+    const lastName = req.body.last_name;
+    const { email } = req.body;
+    let { password } = req.body;
+    const accountStatus = "pending";
+    const verifiedAt = new Date();
+    const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
 
-    payload = {
-      first_name,
-      last_name,
+    const payload = {
+      first_name: firstName,
+      last_name: lastName,
       email,
       password,
-      account_status,
-      verified_at,
+      account_status: accountStatus,
+      verified_at: verifiedAt,
     };
     const oldUser = await User.findOne({ where: { email } });
     if (oldUser) {
       errorResponse(req, res, "User with this email already exists.", 409);
     }
     const user = await User.create(payload);
-    addRole = {
+    const addRole = {
       role_id: req.body.role_id,
       user_id: user.id,
     };
@@ -66,22 +49,7 @@ const createUser = async (req, res) => {
         expiresIn: "2h",
       }
     );
-    return successResponse(req, res, user, token);
-  } catch (err) {
-    return errorResponse(req, res, err.message, 400);
-  }
-};
-// get user by id
-const getUserById = async (req, res) => {
-  try {
-    let { id } = req.params;
-    const user = await User.findOne({
-      where: { id },
-    });
-    if (user) {
-      return successResponse(req, res, user);
-    }
-    return errorResponse(req, res, "No, user found", 400);
+    return successResponse(req, res, "User created successfully", user, token);
   } catch (err) {
     return errorResponse(req, res, err.message, 400);
   }
@@ -92,35 +60,13 @@ const updateUserById = async (req, res) => {
     const { id } = req.params;
     const [updated] = await User.update(req.body, {
       where: { id },
+      returning: true,
     });
     if (updated) {
       const updatedUser = await User.findOne({ where: { id } });
-      return successResponse(req, res, updatedUser);
+      return successResponse(req, res, "User has been updated", updatedUser);
     }
     return errorResponse(req, res, "No, user found to update", 400);
-  } catch (err) {
-    return errorResponse(req, res, err.message, 400);
-  }
-};
-// delete user by id
-const deleteUserById = async (req, res) => {
-  try {
-    let { id } = req.params;
-    const checkUser = await User.findOne({
-      where: { id },
-    });
-    if (checkUser) {
-      const delete_from_role = await UserRole.destroy({
-        where: { user_id: id },
-      });
-      const delete_user = await User.destroy({
-        where: { id },
-      });
-      if (delete_user) {
-        return successResponse(req, res, delete_user);
-      }
-    }
-    return errorResponse(req, res, "No, user found to delete", 400);
   } catch (err) {
     return errorResponse(req, res, err.message, 400);
   }
@@ -145,7 +91,7 @@ const login = async (req, res) => {
           expiresIn: "2h",
         }
       );
-      return successResponse(req, res, user, token);
+      return successResponse(req, res, "User logged in", user, token);
     }
     return errorResponse(req, res, "Invalid Credentials", 400);
   } catch (err) {
@@ -153,10 +99,7 @@ const login = async (req, res) => {
   }
 };
 module.exports = {
-  getAllUser,
-  createUser,
-  getUserById,
-  deleteUserById,
+  register,
   updateUserById,
   login,
 };

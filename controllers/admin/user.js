@@ -8,9 +8,8 @@ const {
 // get all users
 const getAllUser = async (req, res) => {
   try {
-    let users = [];
     // fetch only those users whose role is not admin
-    users = await User.findAll({
+    const users = await User.findAll({
       include: [
         {
           model: Role,
@@ -20,7 +19,7 @@ const getAllUser = async (req, res) => {
         },
       ],
     });
-    return successResponse(req, res, users);
+    return successResponse(req, res, "List of users", users);
   } catch (err) {
     return errorResponse(req, res, err.message, 400);
   }
@@ -33,7 +32,7 @@ const getUserById = async (req, res) => {
       where: { id },
     });
     if (user) {
-      return successResponse(req, res, user);
+      return successResponse(req, res, "User details", user);
     }
     return errorResponse(req, res, "No, user found", 400);
   } catch (err) {
@@ -55,7 +54,7 @@ const updateUserById = async (req, res) => {
     // return res.send(updated);
     if (updated) {
       const updatedUser = await User.findOne({ where: { id } });
-      return successResponse(req, res, updatedUser);
+      return successResponse(req, res, "User has been updated", updatedUser);
     }
     return errorResponse(req, res, "No, user found to update", 400);
   } catch (err) {
@@ -71,14 +70,14 @@ const deleteUserById = async (req, res) => {
       where: { id },
     });
     if (checkUser) {
-      const delete_from_role = await UserRole.destroy({
+      const deleteFromRole = await UserRole.destroy({
         where: { user_id: id },
       });
-      const delete_user = await User.destroy({
+      const deleteUser = await User.destroy({
         where: { id },
       });
-      if (delete_user) {
-        return successResponse(req, res, delete_user);
+      if (deleteUser) {
+        return successResponse(req, res, "User has been deleted", deleteUser);
       }
     }
     return errorResponse(req, res, "No, user found to delete", 400);
